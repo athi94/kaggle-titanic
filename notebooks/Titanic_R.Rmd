@@ -1,0 +1,49 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+tt_train = read.csv('../input/treated_train.csv', header=T)
+
+summary(tt_train)
+```
+
+
+```{r}
+tt_train = tt_train[, -1]
+summary(tt_train)
+```
+
+```{r}
+cl_train = subset(tt_train, select=-c(PassengerId, Name, Ticket, Cabin))
+summary(cl_train)
+```
+
+```{r}
+cl_train = na.omit(cl_train)
+lm.fit = lm(Age ~ ., data=cl_train)
+
+summary(lm.fit)
+```
+
+```{r}
+lm.fit = lm(Age ~ Survived + Pclass + Title + SibSp + Embarked, data=cl_train)
+
+summary(lm.fit)
+```
+
+```{r}
+tt_train[which(tt_train$Title == 'Master' & is.na(tt_train$Age)), ]
+```
+
+```{r}
+imputed = predict(lm.fit, tt_train[which(is.na(tt_train$Age)), ])
+random_imputed = rnorm(length(imputed), imputed, abs(residuals(lm.fit)))
+
+plot(tt_train$Age)
+points(imputed, col='red')
+points(random_imputed, col='green')
+```
+
