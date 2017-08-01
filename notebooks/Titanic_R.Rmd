@@ -39,11 +39,22 @@ tt_train[which(tt_train$Title == 'Master' & is.na(tt_train$Age)), ]
 ```
 
 ```{r}
-imputed = predict(lm.fit, tt_train[which(is.na(tt_train$Age)), ])
-random_imputed = rnorm(length(imputed), imputed, abs(residuals(lm.fit)))
+det_imputed = predict(lm.fit, tt_train[which(is.na(tt_train$Age)), ])
+random_imputed = rnorm(length(det_imputed), det_imputed, abs(residuals(lm.fit)))
+
+# We need to round the random regression imputations and floor them at appropriate values
+
 
 plot(tt_train$Age)
 points(imputed, col='red')
 points(random_imputed, col='green')
+
+
+```
+
+```{r}
+hist(tt_train$Age)
+hist(imputed)
+hist(random_imputed)
 ```
 
