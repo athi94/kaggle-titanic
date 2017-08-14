@@ -18,7 +18,7 @@ def sanitizeName(name):
 
 def sanitizeAge(age):
     if age[-1] == 'm':
-        age = age[:-1]
+        age = '1'
     
     return age
 
@@ -45,11 +45,29 @@ with open('../input/train.csv', 'r+') as train:
         newTrain.append(passenger)
 
 
-with open('../input/train_plus.csv', 'w') as train_pluf_f:
+with open('../input/train_pp.csv', 'w') as train_pluf_f:
     train_plus = csv.DictWriter(train_pluf_f, newTrain[0].keys())
 
     train_plus.writeheader()
     train_plus.writerows(newTrain)
+
+
+newTest = []
+with open('../input/test.csv', 'r+') as test:
+    test_rd = csv.DictReader(test)
+
+    for passenger in test_rd:
+        if missingAge(passenger):
+            passenger['Age'] = sanitizeAge(getBestMatch(passenger['Name'])['Age'])
+
+        newTest.append(passenger)
+
+
+with open('../input/test_pp.csv', 'w') as test_pluf_f:
+    test_plus = csv.DictWriter(test_pluf_f, newTest[0].keys())
+
+    test_plus.writeheader()
+    test_plus.writerows(newTest)
 
 
 
